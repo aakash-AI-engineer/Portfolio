@@ -134,6 +134,24 @@ for (let i = 0; i < formInputs.length; i++) {
   });
 }
 
+// mailto submit handling for the contact form
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  if (!form.checkValidity()) {
+    return;
+  }
+
+  const fullname = form.querySelector("[name='fullname']").value.trim();
+  const email = form.querySelector("[name='email']").value.trim();
+  const message = form.querySelector("[name='message']").value.trim();
+
+  const subject = encodeURIComponent(`Portfolio contact from ${fullname}`);
+  const body = encodeURIComponent(`Name: ${fullname}\nEmail: ${email}\n\n${message}`);
+  const mailtoLink = `mailto:aakashkarthi66@gmail.com?subject=${subject}&body=${body}`;
+
+  window.location.href = mailtoLink;
+});
 
 
 // page navigation variables

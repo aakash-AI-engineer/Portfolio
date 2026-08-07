@@ -460,11 +460,52 @@ main {
 
 .social-item .social-link {
   color: var(--light-gray-70);
-  font-size: 18px;
+  font-size: 20px;
+  padding: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.18s ease, color var(--transition-1);
+  border-radius: 8px;
 }
 
+.social-item .social-link:hover {
+  color: var(--light-gray);
+  transform: translateY(-2px);
+}
 
-.social-item .social-link:hover { color: var(--light-gray); }
+/* Prominent contact buttons (used for email / LinkedIn / GitHub in contact section) */
+.btn-contact {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--accent-red), var(--accent-blue));
+  color: var(--white-1);
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: var(--fw-500);
+  font-size: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.45), 0 0 20px rgba(255,51,51,0.08);
+  border: 1px solid rgba(255,255,255,0.04);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-right: 12px;
+}
+
+.btn-contact:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 35px rgba(51,102,255,0.12), 0 0 30px rgba(255,51,51,0.12);
+}
+
+.contact-embed iframe {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+  background: var(--eerie-black-1);
+}
+
+.contact-alternatives { margin-top: 14px; }
+
+.contact-alt-text { color: var(--light-gray); margin-bottom: 8px; font-size: 14px; }
 
 
 
