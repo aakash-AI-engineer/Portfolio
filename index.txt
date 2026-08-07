@@ -1,0 +1,216 @@
+﻿Aakash Karthikairaja | AI Engineer Portfolio
+
+# sidebar
+
+alt = Aakash Karthikairaja
+Aakash Karthikairaja
+AI Engineer
+
+Show Contacts
+
+Email
+aakashkarthi66@gmail.com
+
+Phone
++91 95976 04885
+
+Location
+Chennai, Tamil Nadu, India
+
+# navbar
+
+About
+Resume
+Portfolio
+Publications
+Contact
+
+# about
+
+About me
+
+Results-driven AI Engineer specializing in scalable machine learning systems, Retrieval-Augmented Generation (RAG) architectures, and Large Language Model (LLM) fine-tuning.
+
+Proven track record of engineering high-performance ML data pipelines, optimizing vector search infrastructure, and deploying automated MLOps workflows.
+
+# service
+
+What I'm doing
+
+alt = AI architecture icon
+AI Systems
+Building scalable ML platforms and production-ready AI systems.
+
+alt = RAG icon
+RAG & Retrieval
+Architecting Retrieval-Augmented Generation pipelines for fast, accurate semantic search.
+
+alt = MLOps icon
+MLOps & Deployment
+Automating CI/CD, data ingestion, and model monitoring workflows.
+
+alt = LLM icon
+LLM Fine-Tuning
+Fine-tuning large language models with guardrails and evaluation.
+
+# testimonials
+
+Testimonials
+
+alt = Amazon Development Centre
+Amazon Development Centre
+Engineered scalable MLOps pipelines and optimized retrieval workflows for enterprise AI.
+
+alt = Brainvoice.ai
+Brainvoice.ai
+Built AI-based conversational intelligence workflows and scalable speech analytics pipelines.
+
+alt = Dream Reflection Media
+Dream Reflection Media
+Delivered a cloud-based AI-SaaS solution with secure inference APIs.
+
+alt = AGNI-S 2026 Publication
+AGNI-S 2026 Publication
+Published a hybrid LSTM-XGBoost model for water-optimal decision making.
+
+# resume
+
+Resume
+
+Education
+
+Master of Technology | Artificial Intelligence
+03/2025 — 11/2025
+SRM Institute of Science and Technology
+
+Bachelor of Engineering | Mechanical Engineering
+09/2019 — 06/2023
+Sri Krishna College of Technology
+
+Experience
+
+Machine Learning Data Associate II
+2025 — Present
+Amazon Development Centre
+
+Associate Developer
+2023 — 2025
+Brainvoice.ai
+
+# skills
+
+My skills
+
+Python & SQL
+95%
+
+MLOps & DevOps
+90%
+
+LLM Engineering
+88%
+
+Cloud Infrastructure
+85%
+
+# portfolio
+
+Portfolio
+
+All
+RAG
+MLOps
+AI Engineering
+
+alt = Healthcare AI Chatbot
+Healthcare AI Chatbot
+RAG
+
+alt = First500Days Assistant
+First500Days Assistant
+RAG
+
+alt = AI-SaaS Platform
+AI-SaaS Platform
+AI Engineering
+
+alt = Vector Search Platform
+Vector Search Platform
+MLOps
+
+alt = LLM Guardrails
+LLM Guardrails
+AI Engineering
+
+alt = Automated CI/CD
+Automated CI/CD
+MLOps
+
+alt = Model Evaluation Dashboard
+Model Evaluation Dashboard
+MLOps
+
+alt = Predictive Analytics App
+Predictive Analytics App
+AI Engineering
+
+alt = Research Publication
+Research Publication
+AI Engineering
+
+# publications
+
+Publications
+
+alt = Hybrid LSTM-XGBoost research
+Research
+Apr 2026
+Hybrid LSTM-XGBoost for Water-Optimal Decisions
+
+developed a decision-level fusion model for weather-informed irrigation scheduling.
+
+alt = SAEIndia racing event
+Engineering
+Nov 2025
+SAEIndia Racing Event Leadership
+
+Presented AI-enabled vehicle performance insights and led technical discussions at the SAEIndia event.
+
+alt = Hyundai EV workshop
+Workshop
+Aug 2025
+Hyundai EV Vehicle Workshop
+
+Delivered a technical workshop on electric vehicle engineering and AI applications in EV systems.
+
+alt = Healthcare AI agent
+Healthcare
+Sep 2025
+Agentic Healthcare AI for First500Days
+
+developed a RAG-based conversational assistant delivering medically accurate guidance for maternal health.
+
+alt = AI SaaS platform
+Product
+Jun 2025
+AI-SaaS Platform for Dream Reflection Media
+
+delivered a cloud-based AI platform with secure low-latency APIs.
+
+alt = Model explainability
+Explainability
+Jan 2025
+Interpretable ML with SHAP and Evaluation Frameworks
+
+Integrated SHAP explainability and evaluation benchmarks.
+
+# contact
+
+Contact
+
+Contact Form
+Full name
+Email address
+Your Message
+
+Send Message
