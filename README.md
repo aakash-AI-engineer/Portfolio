@@ -1,20 +1,22 @@
 # Aakash Karthikairaja — AI Engineer Portfolio
 
-A responsive portfolio website showcasing AI engineering, RAG architectures, MLOps workflows, and LLM fine-tuning projects. Includes publications, SAEIndia event highlights, and Hyundai EV workshop coverage.
+A responsive React, Vite, Tailwind CSS, and Three.js portfolio featuring interactive 3D visuals, AI engineering experience, projects, and contact links.
 
-## Demo
+## Development
 
-![Desktop Demo](./website-demo-image/desktop.png "Desktop Demo")
-![Mobile Demo](./website-demo-image/mobile.png "Mobile Demo")
+```sh
+npm install
+npm run dev
+```
 
-## Open locally
+## Production
 
-Open `index.html` in your browser to view the portfolio.
+```sh
+npm run build
+npm run preview
+```
 
-## Build for deployment
-
-Run `npm run build` to generate the production site in `dist/`. Netlify uses the
-same build command and publishes that directory through `netlify.toml`.
+Vite writes the deployable site to `dist/`. Netlify is configured to run the same build and publish directory.
 
 ## License
 
