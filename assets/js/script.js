@@ -1,5 +1,21 @@
 'use strict';
 
+// Rotate the About section's decorative background images.
+const aboutBackgroundSlides = document.querySelectorAll("[data-about-background]");
+
+if (
+  aboutBackgroundSlides.length > 1 &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+) {
+  let activeBackgroundIndex = 0;
+
+  window.setInterval(function () {
+    aboutBackgroundSlides[activeBackgroundIndex].classList.remove("active");
+    activeBackgroundIndex = (activeBackgroundIndex + 1) % aboutBackgroundSlides.length;
+    aboutBackgroundSlides[activeBackgroundIndex].classList.add("active");
+  }, 6500);
+}
+
 
 
 // element toggle function

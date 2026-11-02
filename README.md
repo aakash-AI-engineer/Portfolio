@@ -11,6 +11,11 @@ A responsive portfolio website showcasing AI engineering, RAG architectures, MLO
 
 Open `index.html` in your browser to view the portfolio.
 
+## Build for deployment
+
+Run `npm run build` to generate the production site in `dist/`. Netlify uses the
+same build command and publishes that directory through `netlify.toml`.
+
 ## License
 
 MIT

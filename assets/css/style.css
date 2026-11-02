@@ -75,13 +75,15 @@
    */
 
   /* font-family */
-  --ff-poppins: 'Poppins', sans-serif;
+  --ff-body: 'Inter', sans-serif;
+  --ff-display: 'Syne', sans-serif;
+  --ff-mono: 'JetBrains Mono', monospace;
 
   /* font-size */
-  --fs-1: 24px;
-  --fs-2: 18px;
-  --fs-3: 17px;
-  --fs-4: 16px;
+  --fs-1: clamp(24px, 1.3rem + 0.75vw, 32px);
+  --fs-2: clamp(18px, 1rem + 0.45vw, 24px);
+  --fs-3: clamp(17px, 0.95rem + 0.3vw, 26px);
+  --fs-4: clamp(16px, 0.95rem + 0.2vw, 18px);
   --fs-5: 15px;
   --fs-6: 14px;
   --fs-7: 13px;
@@ -154,9 +156,25 @@ input, textarea {
 
 :focus { outline-color: var(--accent-blue); }
 
-html { font-family: var(--ff-poppins); }
+html { font-family: var(--ff-body); }
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--ff-display);
+}
+
+code,
+time {
+  font-family: var(--ff-mono);
+}
 
 body { background: var(--smoky-black); }
+
+@media (prefers-reduced-motion: reduce) {
+  .about-background-slide { transition: none; }
+}
 
 
 
@@ -555,6 +573,50 @@ main {
 /*-----------------------------------*\
   #ABOUT
 \*-----------------------------------*/
+
+.about {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.about > :not(.about-background) {
+  position: relative;
+  z-index: 1;
+}
+
+.about-background {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.about-background::after {
+  position: absolute;
+  content: "";
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    rgba(10, 10, 10, 0.94) 0%,
+    rgba(10, 10, 10, 0.78) 55%,
+    rgba(10, 10, 10, 0.58) 100%
+  );
+}
+
+.about-background-slide {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  opacity: 0;
+  transform: scale(1.02);
+  transition: opacity 1.2s ease-in-out;
+}
+
+.about-background-slide.active { opacity: 1; }
 
 .about .article-title { margin-bottom: 15px; }
 
@@ -1337,10 +1399,6 @@ textarea.form-input::-webkit-resizer { display: none; }
      * typography
      */
 
-    --fs-1: 32px;
-    --fs-2: 24px;
-    --fs-3: 26px;
-    --fs-4: 18px;
     --fs-6: 15px;
     --fs-7: 15px;
     --fs-8: 12px;
