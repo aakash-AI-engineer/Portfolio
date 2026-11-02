@@ -1,63 +1,57 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float } from "@react-three/drei";
 import { useMemo, useRef } from "react";
 
-function OrbitalScene() {
+function WireframeGlobe() {
   const system = useRef(null);
+
+  useFrame((state, delta) => {
+    if (!system.current) return;
+    system.current.rotation.y += delta * 0.035;
+    system.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.12) * 0.08 + state.pointer.y * 0.08;
+    system.current.rotation.z = state.pointer.x * 0.08;
+  });
+
+  return (
+    <group ref={system} rotation={[0.15, 0.1, -0.12]}>
+      <mesh>
+        <icosahedronGeometry args={[2.55, 3]} />
+        <meshBasicMaterial color="#a919ef" wireframe transparent opacity={0.34} />
+      </mesh>
+      <mesh rotation={[0.45, 0.3, 0.1]}>
+        <torusGeometry args={[1.72, 0.012, 8, 128]} />
+        <meshBasicMaterial color="#ff2a54" transparent opacity={0.82} />
+      </mesh>
+      <mesh rotation={[1.1, -0.5, 0.5]}>
+        <torusGeometry args={[1.84, 0.008, 8, 128]} />
+        <meshBasicMaterial color="#00f0ff" transparent opacity={0.62} />
+      </mesh>
+    </group>
+  );
+}
+
+function SpaceDust() {
   const points = useMemo(() => {
-    const positions = new Float32Array(540);
+    const positions = new Float32Array(900);
     for (let index = 0; index < positions.length; index += 3) {
-      const radius = 2.5 + Math.random() * 1.4;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      positions[index] = radius * Math.sin(phi) * Math.cos(theta);
-      positions[index + 1] = radius * Math.sin(phi) * Math.sin(theta);
-      positions[index + 2] = radius * Math.cos(phi);
+      const seed = index / 3;
+      positions[index] = Math.sin(seed * 127.1) * 5.4;
+      positions[index + 1] = Math.cos(seed * 311.7) * 3.8;
+      positions[index + 2] = -1 - ((seed * 73.3) % 8);
     }
     return positions;
   }, []);
 
-  useFrame((state, delta) => {
-    if (!system.current) return;
-    system.current.rotation.y += delta * 0.075;
-    system.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.12) * 0.12;
-  });
-
   return (
-    <>
-      <group ref={system} rotation={[0.2, 0.15, -0.15]}>
-        <Float speed={1.1} rotationIntensity={0.12} floatIntensity={0.16}>
-          <mesh>
-            <icosahedronGeometry args={[1.3, 2]} />
-            <meshBasicMaterial color="#00f0ff" wireframe transparent opacity={0.16} />
-          </mesh>
-          <mesh rotation={[0.45, 0.3, 0.1]}>
-            <torusGeometry args={[1.85, 0.006, 8, 160]} />
-            <meshBasicMaterial color="#ff2a54" transparent opacity={0.8} />
-          </mesh>
-          <mesh rotation={[1.1, -0.5, 0.5]}>
-            <torusGeometry args={[2.15, 0.004, 8, 160]} />
-            <meshBasicMaterial color="#00f0ff" transparent opacity={0.58} />
-          </mesh>
-        </Float>
-        <points>
-          <bufferGeometry>
-            <bufferAttribute attach="attributes-position" args={[points, 3]} />
-          </bufferGeometry>
-          <pointsMaterial
-            color="#d9faff"
-            size={0.025}
-            transparent
-            opacity={0.62}
-            sizeAttenuation
-          />
-        </points>
-      </group>
-    </>
+    <points>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[points, 3]} />
+      </bufferGeometry>
+      <pointsMaterial color="#dce8ff" size={0.018} transparent opacity={0.65} sizeAttenuation />
+    </points>
   );
 }
 
-export default function ParticleField() {
+export default function HeroScene() {
   const reducedMotion = useMemo(
     () =>
       typeof window !== "undefined" &&
@@ -66,15 +60,16 @@ export default function ParticleField() {
   );
 
   return (
-    <div className="particle-field" aria-hidden="true">
+    <div className="hero-scene" aria-hidden="true">
       <Canvas
         frameloop={reducedMotion ? "demand" : "always"}
         dpr={[1, 1.25]}
-        camera={{ position: [0, 0, 8], fov: 42 }}
+        camera={{ position: [0, 0, 7.8], fov: 42 }}
         gl={{ alpha: true, antialias: false, powerPreference: "low-power" }}
-        fallback={<div className="particle-fallback" />}
+        fallback={<div className="hero-scene-fallback" />}
       >
-        <OrbitalScene />
+        <WireframeGlobe />
+        <SpaceDust />
       </Canvas>
     </div>
   );

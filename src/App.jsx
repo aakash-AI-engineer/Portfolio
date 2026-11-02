@@ -1,4 +1,4 @@
-import { Component, lazy, Suspense, useEffect } from "react";
+import { Component, useEffect } from "react";
 import { MotionConfig } from "framer-motion";
 import { initScroll, ScrollTrigger, destroyScroll } from "./lib/scroll";
 import ChapterHUD from "./components/ChapterHUD";
@@ -15,8 +15,6 @@ import {
   Projects,
   Skills,
 } from "./components/Sections";
-
-const ParticleField = lazy(() => import("./components/ParticleField.jsx"));
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -55,9 +53,7 @@ export default function App() {
     <ErrorBoundary>
       <MotionConfig reducedMotion="user">
         <div className="portfolio-root">
-          <Suspense fallback={<div className="particle-field particle-fallback" aria-hidden="true" />}>
-            <ParticleField />
-          </Suspense>
+          <div className="space-backdrop" aria-hidden="true" />
           <GrainOverlay />
           <CustomCursor />
           <Navbar />

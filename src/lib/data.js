@@ -1,6 +1,6 @@
 export const PROFILE = {
   name: "Aakash Karthikairaja",
-  short: "AAKASH AI",
+  short: "AAKASH",
   role: "AI Engineer & Creative Developer",
   tagline: "AI & Machine Learning Engineer | Ex-Amazon | Full-Stack & 3D Web Developer",
   email: "aakashkarthi66@gmail.com",

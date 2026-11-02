@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowDown,
@@ -9,12 +9,9 @@ import {
   Copy,
   Mail,
   MapPin,
-  Menu,
   MessageCircle,
-  X,
 } from "lucide-react";
 import {
-  CHAPTERS,
   EDUCATION,
   EXPERIENCE,
   FOUNDER_SERVICES,
@@ -31,6 +28,7 @@ const reveal = {
   hidden: { opacity: 0, y: 22 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.2, 0.7, 0.2, 1] } },
 };
+const HeroScene = lazy(() => import("./ParticleField.jsx"));
 
 export function GrainOverlay() {
   return <div className="grain-overlay" aria-hidden="true" />;
@@ -63,59 +61,14 @@ export function CustomCursor() {
 }
 
 export function Navbar() {
-  const [active, setActive] = useState("ch-00");
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    const sections = CHAPTERS.map(({ target }) => document.querySelector(target)).filter(Boolean);
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((left, right) => right.intersectionRatio - left.intersectionRatio)[0];
-        if (visible) setActive(visible.target.id);
-      },
-      { rootMargin: "-25% 0px -55% 0px", threshold: [0, 0.15, 0.4] },
-    );
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, []);
-
-  const navigate = (event, target) => {
-    event.preventDefault();
-    setOpen(false);
-    scrollToTarget(target);
-  };
-
   return (
     <header className="site-header">
-      <a className="wordmark" href="#ch-00" onClick={(event) => navigate(event, "#ch-00")}>
-        <span className="wordmark-icon">A</span>
-        <span>{PROFILE.short}<small>ENGINEERING / 3D</small></span>
+      <a className="wordmark" href="#ch-00" aria-label="Aakash home">
+        <span className="wordmark-icon"><Code2 size={22} /></span>
+        <span>{PROFILE.short}<small>.AI // PORTFOLIO</small></span>
       </a>
-      <button
-        className="menu-toggle"
-        type="button"
-        aria-label={open ? "Close navigation" : "Open navigation"}
-        aria-expanded={open}
-        onClick={() => setOpen((value) => !value)}
-      >
-        {open ? <X size={20} /> : <Menu size={20} />}
-      </button>
-      <nav className={`site-nav${open ? " is-open" : ""}`} aria-label="Main navigation">
-        {CHAPTERS.map(({ id, label, target }) => (
-          <a
-            key={id}
-            href={target}
-            className={active === target.slice(1) ? "active" : ""}
-            onClick={(event) => navigate(event, target)}
-          >
-            <span>{id}</span>{label}
-          </a>
-        ))}
-      </nav>
-      <a className="header-contact" href={`mailto:${PROFILE.email}`}>
-        Let&apos;s talk <ArrowUpRight size={15} />
+      <a className="header-contact" href={PROFILE.whatsapp} target="_blank" rel="noopener noreferrer">
+        BOOK A 48-HR BUILD
       </a>
     </header>
   );
@@ -157,42 +110,44 @@ function resetMagnetic(event) {
 
 export function Hero() {
   return (
-    <section className="hero section-shell" id="ch-00">
-      <div className="hero-wordmark" aria-hidden="true">AAKASH AI</div>
-      <div className="hero-copy">
-        <motion.p className="eyebrow" initial="hidden" animate="visible" variants={reveal}>
-          <span className="live-dot" /> {PROFILE.status}
-        </motion.p>
-        <p className="hero-intro">HELLO, I&apos;M {PROFILE.name.toUpperCase()}<br />{PROFILE.tagline.toUpperCase()}</p>
-        <motion.h1 initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.08 }}>
-          Building intelligence
-          <br />
-          <span>with imagination.</span>
-        </motion.h1>
-        <motion.p className="hero-description" initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.16 }}>
-          I&apos;m {PROFILE.name}, an AI engineer creating practical machine-learning systems and expressive digital experiences.
-        </motion.p>
-        <motion.div className="hero-actions" initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.24 }}>
-          <a className="button button-primary magnetic-button" href={PROFILE.whatsapp} target="_blank" rel="noopener noreferrer" onPointerMove={updateMagnetic} onPointerLeave={resetMagnetic}>
-            BOOK A 48-HR BUILD / HIRE ME <ArrowUpRight size={17} />
-          </a>
-          <a className="button button-quiet" href={`mailto:${PROFILE.email}`}>
-            Start a conversation <ArrowUpRight size={16} />
-          </a>
-        </motion.div>
-        <div className="hero-stats">
-          {STATS.map((stat) => (
-            <div className="hero-stat" key={stat.label}>
-              <strong>{stat.value}</strong>
-              <span>{stat.label}</span>
-            </div>
-          ))}
-        </div>
+    <section className="hero" id="ch-00">
+      <div className="hero-coordinate" aria-hidden="true">SYS.LOC: 10.79° N, 78.70° E</div>
+      <div className="hero-wordmark" aria-hidden="true">
+        <span>AAKASH</span>
+        <span>AI <i>// PORTFOLIO</i></span>
       </div>
-      <div className="hero-visual" aria-label="Interactive 3D orbital network illustration" onPointerMove={updateParallax} onPointerLeave={resetParallax}>
-        <div className="hero-orbit orbit-one" />
-        <div className="hero-orbit orbit-two" />
-        <div className="hero-core"><span>AI</span><i /></div>
+      <div className="hero-grid-floor" aria-hidden="true" />
+      <Suspense fallback={<div className="hero-scene hero-scene-fallback" aria-hidden="true" />}>
+        <HeroScene />
+      </Suspense>
+      <div className="hero-portrait" aria-label={`${PROFILE.name}, ${PROFILE.role}`}>
+        <div className="portrait-glow" />
+        <img src="/assets/images/profile-portrait.png" alt={PROFILE.name} />
+      </div>
+      <div className="hero-copy">
+        <p className="hero-greeting">// HELLO, I&apos;M</p>
+        <h1>AAKASH</h1>
+        <p className="hero-role"><span className="live-dot" /> AI ENGINEER &amp; CREATIVE DEVELOPER</p>
+        <p className="hero-tagline">FULL-STACK &amp; 3D WEB <i>//</i> EX-AMAZON</p>
+      </div>
+      <div className="hero-stats" aria-label="Career highlights">
+        {STATS.map((stat, index) => (
+          <div className="hero-stat" key={stat.label}>
+            {index === 0 && <strong>3+</strong>}
+            <span>{stat.value === "3+" ? stat.label : `${stat.value} ${stat.label}`}</span>
+          </div>
+        ))}
+      </div>
+      <div className="hero-actions">
+        <a className="button button-primary magnetic-button" href={PROFILE.whatsapp} target="_blank" rel="noopener noreferrer" onPointerMove={updateMagnetic} onPointerLeave={resetMagnetic}>
+          BOOK A 48-HR BUILD
+        </a>
+        <a className="button button-quiet" href={`mailto:${PROFILE.email}`}>
+          HIRE ME <ArrowUpRight size={14} />
+        </a>
+      </div>
+      <p className="hero-status"><span className="live-dot" /> {PROFILE.status}</p>
+      <div className="hero-tech-cloud" aria-label="Technology stack">
         {HERO_CARDS.map((card) => (
           <span
             className="floating-label"
@@ -202,14 +157,9 @@ export function Hero() {
             <span />{card.label}
           </span>
         ))}
-        <div className="hero-portrait">
-          <img src="/assets/images/profile-portrait.png" alt="" />
-          <span className="live-dot" />
-        </div>
-        <div className="visual-caption"><Code2 size={14} /> ML SYSTEMS / DIGITAL WORLDS</div>
       </div>
       <a className="scroll-cue" href="#ch-01" onClick={(event) => navigateClick(event, "#ch-01")}>
-        SCROLL TO EXPLORE <ArrowDown size={14} />
+        <span /> SCROLL TO EXPLORE <ArrowDown size={14} />
       </a>
     </section>
   );
@@ -233,21 +183,20 @@ export function Marquee() {
 
 export function Experience() {
   return (
-    <section className="content-section section-shell" id="ch-01">
-      <SectionHeading number="01" kicker="THE JOURNEY" title={<>Experience built<br /><em>in the real world.</em></>} />
+    <section className="content-section chapter-section" id="ch-01">
+      <SectionHeading number="01" kicker="CH.01 //" title="EXPERIENCE" description="Roles that built the arsenal — production AI systems, high-precision data work and applied machine learning." />
       <div className="experience-list">
         {EXPERIENCE.map((item, index) => (
           <motion.article className="experience-card tilt-card" key={item.company} onPointerMove={updateParallax} onPointerLeave={resetParallax} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }} custom={index}>
-            <div className="experience-marker" style={{ "--accent": item.accent }}><span /></div>
-            <div className="experience-period">{item.period}</div>
-            <div className="experience-detail">
-              <p className="experience-team">{item.team}</p>
-              <h3>{item.role}</h3>
-              <h4>{item.company}</h4>
-              <p className="body-copy">{item.description}</p>
-              <div className="tag-row">{item.tags.map((tag) => <span className="tag" key={tag}>{tag}</span>)}</div>
+            <div className="experience-card-meta">
+              <span className="experience-period">{item.period}</span>
+              <span className="experience-team">{item.team}</span>
             </div>
-            <span className="experience-index">0{index + 1}</span>
+            <h3>{item.company}</h3>
+            <p className="experience-role">{item.role}</p>
+            <p className="body-copy">{item.description}</p>
+            <div className="tag-row">{item.tags.map((tag) => <span className="tag" key={tag}>{tag}</span>)}</div>
+            <span className="experience-index">{String(index + 1).padStart(2, "0")}</span>
           </motion.article>
         ))}
       </div>
@@ -255,10 +204,95 @@ export function Experience() {
   );
 }
 
+function SkillOrbit() {
+  const [hovered, setHovered] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const active = hovered ?? selected;
+  const nodes = SKILL_CATEGORIES.map((category, categoryIndex) => ({
+    category,
+    categoryIndex,
+    skills: category.items.slice(0, 6),
+  }));
+  const ringRadii = [37, 29, 21];
+
+  return (
+    <div className="skill-orbit" aria-label="Interactive technology skill map">
+      <div className="orbit-cluster-controls" role="group" aria-label="Isolate a skill cluster">
+        {nodes.map(({ category }, index) => (
+          <button
+            key={category.name}
+            type="button"
+            aria-pressed={selected === index}
+            style={{ "--cluster-color": category.color }}
+            onClick={() => setSelected(selected === index ? null : index)}
+          >
+            <i />{category.name}
+          </button>
+        ))}
+      </div>
+      <svg className="skill-orbit-lines" viewBox="0 0 1000 460" aria-hidden="true">
+        {ringRadii.map((radius, index) => (
+          <ellipse
+            key={radius}
+            cx="500"
+            cy="230"
+            rx={`${radius}%`}
+            ry={`${radius * 0.52}%`}
+            fill="none"
+            stroke={nodes[index].category.color}
+            strokeOpacity={active === null || active === index ? "0.5" : "0.12"}
+            strokeWidth="1"
+          />
+        ))}
+        {nodes.map(({ category }, index) => (
+          <line
+            key={category.name}
+            x1="500"
+            y1="230"
+            x2={index === 0 ? "130" : index === 1 ? "790" : "500"}
+            y2={index === 2 ? "70" : "380"}
+            stroke={category.color}
+            strokeOpacity={active === null || active === index ? "0.28" : "0.06"}
+          />
+        ))}
+      </svg>
+      <div className="orbit-core"><span>AI</span><small>ARSENAL</small></div>
+      {nodes.map(({ category, categoryIndex, skills }) => (
+        <div
+          key={category.name}
+          className={`orbit-cluster${active === categoryIndex ? " is-active" : ""}`}
+          style={{ "--cluster-color": category.color, "--ring-radius": `${ringRadii[categoryIndex]}%` }}
+          onMouseEnter={() => setHovered(categoryIndex)}
+          onMouseLeave={() => setHovered(null)}
+        >
+          {skills.map((skill, index) => {
+            const angle = (index / skills.length) * Math.PI * 2 - Math.PI / 2;
+            return (
+              <button
+                className="orbit-node"
+                key={skill}
+                type="button"
+                style={{ "--node-x": `${50 + Math.cos(angle) * ringRadii[categoryIndex]}%`, "--node-y": `${50 + Math.sin(angle) * ringRadii[categoryIndex] * 0.52}%` }}
+                aria-label={`${skill} — ${category.name}`}
+                onFocus={() => setHovered(categoryIndex)}
+                onBlur={() => setHovered(null)}
+              >
+                <i />{skill}
+              </button>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function Skills() {
   return (
-    <section className="content-section skills-section section-shell" id="ch-02">
-      <SectionHeading number="02" kicker="THE TOOLKIT" title={<>Curiosity, backed<br /><em>by capability.</em></>} />
+    <section className="content-section skills-section chapter-section" id="ch-02">
+      <SectionHeading number="02" kicker="CH.02 //" title="AI & 3D ARSENAL" description="The full stack taxonomy — hover the orbital nodes, or click a cluster to isolate its ring." />
+      <div className="orbit-heading"><span /> ORBITAL MAP // 03 CLUSTERS <span>HOVER NODES</span></div>
+      <SkillOrbit />
       <div className="skill-grid">
         {SKILL_CATEGORIES.map((category, index) => (
           <motion.article className="skill-card tilt-card" key={category.name} onPointerMove={updateParallax} onPointerLeave={resetParallax} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} transition={{ delay: index * 0.08 }}>
@@ -277,31 +311,65 @@ export function Skills() {
 }
 
 export function Projects() {
+  const section = useRef(null);
+  const track = useRef(null);
+
+  useEffect(() => {
+    const media = gsap.matchMedia();
+    media.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
+      if (!section.current || !track.current) return undefined;
+      const getDistance = () => Math.max(0, track.current.scrollWidth - section.current.clientWidth);
+      const tween = gsap.to(track.current, {
+        x: () => -getDistance(),
+        ease: "none",
+        scrollTrigger: {
+          trigger: section.current,
+          start: "top top",
+          end: () => `+=${getDistance()}`,
+          pin: true,
+          scrub: 0.8,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
+        },
+      });
+      return () => tween.scrollTrigger?.kill();
+    });
+    return () => media.revert();
+  }, []);
+
   return (
-    <section className="content-section projects-section section-shell" id="ch-03">
-      <SectionHeading number="03" kicker="SELECTED WORK" title={<>Ideas turned<br /><em>into working systems.</em></>} />
-      <div className="project-grid">
-        {PROJECTS.map((project, index) => (
-          <motion.article className="project-card tilt-card" key={project.index} onPointerMove={updateParallax} onPointerLeave={resetParallax} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} transition={{ delay: (index % 2) * 0.08 }}>
-            <div className="project-image-wrap" style={{ "--accent": project.accent }}>
-              <img src={project.image} alt={project.imageAlt} loading="lazy" />
-              <span className="project-number">{project.index}</span>
-              <span className="project-image-mark"><ArrowUpRight size={19} /></span>
-            </div>
-            <div className="project-copy">
-              <p className="project-subtitle">{project.subtitle}</p>
-              <h3>{project.title}</h3>
-              <p className="body-copy">{project.description}</p>
-              <div className="tag-row">{project.stack.map((item) => <span className="tag" key={item}>{item}</span>)}</div>
-              {(project.demo || project.repo) && (
+    <section className="content-section projects-section" id="ch-03" ref={section}>
+      <div className="projects-heading">
+        <SectionHeading number="03" kicker="CH.03 //" title="FEATURED BUILDS" description="Selected work — shipped, benchmarked and peer-reviewed." />
+        <span className="project-counter">01 <i>/</i> 04</span>
+      </div>
+      <div className="project-viewport">
+        <div className="project-track" ref={track}>
+          {PROJECTS.map((project) => (
+            <article className="project-card tilt-card" key={project.index} onPointerMove={updateParallax} onPointerLeave={resetParallax}>
+              <div className="project-image-wrap" style={{ "--accent": project.accent }}>
+                <img src={project.image} alt={project.imageAlt} loading="lazy" />
+                <span className="project-number">{project.index} / 04</span>
+                <span className="project-image-mark"><ArrowUpRight size={19} /></span>
+              </div>
+              <div className="project-copy">
+                <p className="project-subtitle">{project.subtitle}</p>
+                <h3>{project.title}</h3>
+                <p className="body-copy">{project.description}</p>
+                <div className="tag-row">{project.stack.map((item) => <span className="tag" key={item}>{item}</span>)}</div>
                 <div className="project-links">
-                  {project.demo && <a href={project.demo} target="_blank" rel="noopener noreferrer">LIVE DEMO <ArrowUpRight size={14} /></a>}
-                  {project.repo && <a href={project.repo} target="_blank" rel="noopener noreferrer">SOURCE CODE <Code2 size={14} /></a>}
+                  {project.demo ? <a href={project.demo} target="_blank" rel="noopener noreferrer">LIVE DEMO <ArrowUpRight size={14} /></a> : <span aria-disabled="true" title="Demo link not provided">LIVE DEMO <ArrowUpRight size={14} /></span>}
+                  {project.repo ? <a href={project.repo} target="_blank" rel="noopener noreferrer">GITHUB <Code2 size={14} /></a> : <span aria-disabled="true" title="Repository link not provided">GITHUB <Code2 size={14} /></span>}
                 </div>
-              )}
-            </div>
-          </motion.article>
-        ))}
+              </div>
+            </article>
+          ))}
+          <a className="project-card project-cta-card" href={PROFILE.whatsapp} target="_blank" rel="noopener noreferrer">
+            <span>YOUR BUILD</span>
+            <strong>HERE?</strong>
+            <span className="button button-primary">START A 48-HR BUILD <ArrowUpRight size={15} /></span>
+          </a>
+        </div>
       </div>
     </section>
   );
@@ -309,8 +377,8 @@ export function Projects() {
 
 export function Education() {
   return (
-    <section className="content-section education-section section-shell" id="ch-04">
-      <SectionHeading number="04" kicker="RESEARCH & EDUCATION" title={<>Strong foundations.<br /><em>Always learning.</em></>} />
+    <section className="content-section education-section chapter-section" id="ch-04">
+      <SectionHeading number="04" kicker="CH.04 //" title="RESEARCH & EDUCATION" description="Research at the intersection of predictive intelligence and real-world systems." />
       <div className="education-grid">
         {EDUCATION.map((item) => (
           <article className="education-card" key={item.degree} style={{ "--accent": item.accent }}>
@@ -348,13 +416,15 @@ export function Contact() {
   };
 
   return (
-    <section className="contact-section section-shell" id="ch-05">
+    <section className="contact-section chapter-section" id="ch-05">
       <div className="contact-glow" aria-hidden="true" />
+      <SectionHeading number="05" kicker="CH.05 //" title="INITIATE CONTACT" description="Two doors. One inbox — pick your mode and let's ship something." />
+      <div className="contact-panels">
       <div className="contact-content founder-terminal">
         <p className="eyebrow"><span className="live-dot" /> OPEN TO WHAT&apos;S NEXT</p>
         <h2>Build something<br /><em>worth shipping.</em></h2>
         <p className="contact-copy">Need a high-converting 3D website, MVP, or custom AI workflow shipped in 48–72 hours? Choose a starting point and let&apos;s talk.</p>
-        <p className="terminal-label">FOR FOUNDERS &amp; BUSINESSES</p>
+        <p className="terminal-label">$ CONTACT --MODE=FOUNDERS</p>
         <div className="service-pills" role="group" aria-label="Choose a project type">
           {FOUNDER_SERVICES.map((service) => (
             <button key={service} type="button" aria-pressed={selectedService === service} onClick={() => setSelectedService(service)}>
@@ -363,17 +433,18 @@ export function Contact() {
           ))}
         </div>
         <div className="contact-actions">
-          <a className="button button-primary" href={whatsappUrl.href} target="_blank" rel="noopener noreferrer"><MessageCircle size={16} /> WhatsApp</a>
-          <a className="button button-quiet" href={emailUrl}><Mail size={16} /> Email</a>
+          <a className="button button-primary" href={whatsappUrl.href} target="_blank" rel="noopener noreferrer"><MessageCircle size={16} /> WHATSAPP ME</a>
+          <a className="button button-quiet" href={emailUrl}><Mail size={16} /> EMAIL THE BRIEF</a>
         </div>
       </div>
       <div className="contact-details recruiter-terminal">
-        <p className="terminal-label">FOR RECRUITERS</p>
+        <p className="terminal-label">$ CONTACT --MODE=RECRUITERS</p>
         <a href={PROFILE.github} target="_blank" rel="noopener noreferrer"><Code2 size={17} /><span><small>GITHUB</small>Projects &amp; code</span><ArrowUpRight size={15} /></a>
         <a href={PROFILE.linkedin} target="_blank" rel="noopener noreferrer"><ArrowUpRight size={17} /><span><small>LINKEDIN</small>Professional profile</span><ArrowUpRight size={15} /></a>
         <a href={PROFILE.resume} download><ArrowDown size={17} /><span><small>RESUME</small>Download PDF</span><ArrowUpRight size={15} /></a>
         <button className="copy-email" type="button" onClick={copyEmail}><Copy size={16} /><span><small>EMAIL</small><span aria-live="polite">{copyStatus || PROFILE.email}</span></span></button>
         <div className="contact-location"><MapPin size={16} />{PROFILE.location}</div>
+      </div>
       </div>
     </section>
   );
@@ -389,40 +460,15 @@ export function Footer() {
   );
 }
 
-function SectionHeading({ number, kicker, title }) {
-  const heading = useRef(null);
-  const watermark = useRef(null);
-
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      gsap.set(watermark.current, { autoAlpha: 0.1, x: 0 });
-      return undefined;
-    }
-    const context = gsap.context(() => {
-      gsap.fromTo(
-        watermark.current,
-        { autoAlpha: 0, x: 70 },
-        {
-          autoAlpha: 0.1,
-          x: 0,
-          duration: 1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: heading.current.closest("section"),
-            start: "top 70%",
-            once: true,
-          },
-        },
-      );
-    }, heading);
-    return () => context.revert();
-  }, []);
-
+function SectionHeading({ number, kicker, title, description }) {
   return (
-    <motion.div ref={heading} className="section-heading" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.25 }}>
-      <span ref={watermark} className="chapter-watermark" aria-hidden="true">{number}</span>
+    <motion.div className="section-heading" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.25 }}>
       <span className="section-number">{number}</span>
-      <div><p className="eyebrow">{kicker}</p><h2>{title}</h2></div>
+      <div>
+        <p className="eyebrow">{kicker}</p>
+        <h2>{title}</h2>
+        {description && <p className="section-description">{description}</p>}
+      </div>
       <ArrowDownRight className="heading-arrow" size={23} />
     </motion.div>
   );
