@@ -14,22 +14,22 @@ export const PROFILE = {
 };
 
 export const CHAPTERS = [
-  { id: "00", label: "INTRO", target: "#ch-00" },
+  { id: "00", label: "THE PROTAGONIST", target: "#ch-00" },
   { id: "01", label: "EXPERIENCE", target: "#ch-01" },
-  { id: "02", label: "CAPABILITIES", target: "#ch-02" },
-  { id: "03", label: "SELECTED WORK", target: "#ch-03" },
-  { id: "04", label: "EDUCATION", target: "#ch-04" },
-  { id: "05", label: "CONTACT", target: "#ch-05" },
+  { id: "02", label: "AI & 3D ARSENAL", target: "#ch-02" },
+  { id: "03", label: "FEATURED BUILDS", target: "#ch-03" },
+  { id: "04", label: "RESEARCH & EDUCATION", target: "#ch-04" },
+  { id: "05", label: "INITIATE CONTACT", target: "#ch-05" },
 ];
 
 export const HERO_CARDS = [
-  { label: "Python", color: "#ff3b5c", depth: 30, x: 4, y: 36, delay: 0 },
-  { label: "PyTorch", color: "#ff3b5c", depth: 46, x: 16, y: 72, delay: 0.6 },
-  { label: "LangChain", color: "#9270ff", depth: 22, x: 15, y: 44, delay: 1.1 },
-  { label: "FastAPI", color: "#37d9f5", depth: 36, x: 80, y: 30, delay: 0.3 },
-  { label: "Claude", color: "#ff3b5c", depth: 26, x: 84, y: 62, delay: 0.9 },
-  { label: "Docker", color: "#37d9f5", depth: 42, x: 74, y: 82, delay: 1.4 },
-  { label: "React", color: "#37d9f5", depth: 20, x: 66, y: 12, delay: 0.5 },
+  { label: "Python", color: "#ff2a54", depth: 30, x: 4, y: 36, delay: 0 },
+  { label: "PyTorch", color: "#ff2a54", depth: 46, x: 16, y: 72, delay: 0.6 },
+  { label: "LangChain", color: "#7928ca", depth: 22, x: 15, y: 44, delay: 1.1 },
+  { label: "FastAPI", color: "#00f0ff", depth: 36, x: 80, y: 30, delay: 0.3 },
+  { label: "Claude", color: "#ff2a54", depth: 26, x: 84, y: 62, delay: 0.9 },
+  { label: "Docker", color: "#00f0ff", depth: 42, x: 74, y: 82, delay: 1.4 },
+  { label: "React", color: "#00f0ff", depth: 20, x: 66, y: 12, delay: 0.5 },
 ];
 
 export const STATS = [
@@ -47,7 +47,7 @@ export const EXPERIENCE = [
     description:
       "Engineered RAG pipelines, LLM evaluation workflows, and high-precision AI data systems for production use.",
     tags: ["RAG Pipelines", "LLM Evaluation", "AI Data Systems"],
-    accent: "#ff3b5c",
+    accent: "#ff2a54",
   },
   {
     company: "Snorkel AI",
@@ -57,7 +57,7 @@ export const EXPERIENCE = [
     description:
       "Authored and solved complex machine-learning benchmark tasks inside isolated Docker sandboxes.",
     tags: ["ML Benchmarks", "Docker", "Task Authoring"],
-    accent: "#9270ff",
+    accent: "#7928ca",
   },
   {
     company: "Brainvoice.ai",
@@ -67,14 +67,14 @@ export const EXPERIENCE = [
     description:
       "Worked alongside senior developers on backend architecture, conversational intelligence, and AI product features.",
     tags: ["Backend Architecture", "AI Features", "Speech Analytics"],
-    accent: "#37d9f5",
+    accent: "#00f0ff",
   },
 ];
 
 export const SKILL_CATEGORIES = [
   {
     name: "Generative AI & LLMs",
-    color: "#ff3b5c",
+    color: "#ff2a54",
     items: [
       "RAG Architecture",
       "LangChain",
@@ -90,7 +90,7 @@ export const SKILL_CATEGORIES = [
   },
   {
     name: "Full-Stack & 3D Web",
-    color: "#37d9f5",
+    color: "#00f0ff",
     items: [
       "React",
       "Three.js",
@@ -106,7 +106,7 @@ export const SKILL_CATEGORIES = [
   },
   {
     name: "Deep Learning & ML",
-    color: "#9270ff",
+    color: "#7928ca",
     items: [
       "PyTorch",
       "TensorFlow",
@@ -126,7 +126,7 @@ export const PROJECTS = [
     description:
       "AI lead scoring and smart-response backend built with Python, Flask, Pydantic, and SQLite.",
     stack: ["Python", "Flask", "Pydantic", "SQLite"],
-    accent: "#ff3b5c",
+    accent: "#ff2a54",
     image: "/assets/images/engineering-platform.webp",
     imageAlt: "AI product dashboard representing Varynt AI",
   },
@@ -137,7 +137,7 @@ export const PROJECTS = [
     description:
       "Local automation agent using Playwright and structured validation to extract and populate complex web forms.",
     stack: ["Python", "Playwright", "Pydantic v2", "SQLite"],
-    accent: "#9270ff",
+    accent: "#7928ca",
     image: "/assets/images/project-8.jpg",
     imageAlt: "Predictive application interface",
   },
@@ -148,7 +148,7 @@ export const PROJECTS = [
     description:
       "Interactive conversational platform combining Streamlit with language-model experiences.",
     stack: ["Python", "Streamlit", "LLM"],
-    accent: "#37d9f5",
+    accent: "#00f0ff",
     image: "/assets/images/healthcare-chatbot.jpg",
     imageAlt: "Healthcare conversational AI interface",
   },
@@ -171,14 +171,14 @@ export const EDUCATION = [
     school: "SRM Institute of Science and Technology",
     period: "2023 — 2026",
     note: "Applied AI research and large-scale machine-learning systems.",
-    accent: "#ff3b5c",
+    accent: "#ff2a54",
   },
   {
     degree: "B.E. in Mechanical Engineering",
     school: "Sri Krishna College of Technology",
     period: "GRADUATED",
     note: "Engineering fundamentals, analytical thinking, and system design.",
-    accent: "#9270ff",
+    accent: "#7928ca",
   },
 ];
 

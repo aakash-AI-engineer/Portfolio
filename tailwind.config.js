@@ -4,14 +4,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        void: "#07090d",
-        crimson: "#ff3b5c",
-        cyan: "#37d9f5",
-        violet: "#9270ff",
+        void: "#050508",
+        crimson: "#ff2a54",
+        cyan: "#00f0ff",
+        violet: "#7928ca",
       },
       fontFamily: {
-        sans: ["Manrope", "sans-serif"],
-        mono: ["DM Mono", "monospace"],
+        sans: ["Inter", "sans-serif"],
+        display: ["Syne", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
       },
     },
   },

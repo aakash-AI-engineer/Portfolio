@@ -29,15 +29,15 @@ function OrbitalScene() {
         <Float speed={1.1} rotationIntensity={0.12} floatIntensity={0.16}>
           <mesh>
             <icosahedronGeometry args={[1.3, 2]} />
-            <meshBasicMaterial color="#37d9f5" wireframe transparent opacity={0.16} />
+            <meshBasicMaterial color="#00f0ff" wireframe transparent opacity={0.16} />
           </mesh>
           <mesh rotation={[0.45, 0.3, 0.1]}>
             <torusGeometry args={[1.85, 0.006, 8, 160]} />
-            <meshBasicMaterial color="#ff3b5c" transparent opacity={0.8} />
+            <meshBasicMaterial color="#ff2a54" transparent opacity={0.8} />
           </mesh>
           <mesh rotation={[1.1, -0.5, 0.5]}>
             <torusGeometry args={[2.15, 0.004, 8, 160]} />
-            <meshBasicMaterial color="#37d9f5" transparent opacity={0.58} />
+            <meshBasicMaterial color="#00f0ff" transparent opacity={0.58} />
           </mesh>
         </Float>
         <points>

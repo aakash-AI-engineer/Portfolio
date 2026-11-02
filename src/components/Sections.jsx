@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowDown,
@@ -6,6 +6,7 @@ import {
   ArrowUpRight,
   Check,
   Code2,
+  Copy,
   Mail,
   MapPin,
   Menu,
@@ -24,7 +25,7 @@ import {
   SKILL_CATEGORIES,
   STATS,
 } from "../lib/data";
-import { scrollToTarget } from "../lib/scroll";
+import { gsap, scrollToTarget } from "../lib/scroll";
 
 const reveal = {
   hidden: { opacity: 0, y: 22 },
@@ -53,7 +54,12 @@ export function CustomCursor() {
     };
   }, []);
 
-  return <div className="custom-cursor" aria-hidden="true" />;
+  return (
+    <>
+      <div className="custom-cursor-trail" aria-hidden="true" />
+      <div className="custom-cursor" aria-hidden="true" />
+    </>
+  );
 }
 
 export function Navbar() {
@@ -115,32 +121,49 @@ export function Navbar() {
   );
 }
 
-export function ChapterHUD() {
-  const [progress, setProgress] = useState(0);
-  useEffect(() => {
-    const update = () => {
-      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(scrollable > 0 ? window.scrollY / scrollable : 0);
-    };
-    window.addEventListener("scroll", update, { passive: true });
-    update();
-    return () => window.removeEventListener("scroll", update);
-  }, []);
+function updateParallax(event) {
+  if (window.matchMedia("(pointer: coarse)").matches) return;
+  const bounds = event.currentTarget.getBoundingClientRect();
+  const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+  const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+  event.currentTarget.style.setProperty("--tilt-x", `${-y * 5}deg`);
+  event.currentTarget.style.setProperty("--tilt-y", `${x * 7}deg`);
+  event.currentTarget.style.setProperty("--spot-x", `${(x + 0.5) * 100}%`);
+  event.currentTarget.style.setProperty("--spot-y", `${(y + 0.5) * 100}%`);
+  const magnitude = Math.hypot(x, y);
+  event.currentTarget.style.setProperty("--tilt-axis-x", magnitude ? `${-y / magnitude}` : "0");
+  event.currentTarget.style.setProperty("--tilt-axis-y", magnitude ? `${x / magnitude}` : "0");
+  event.currentTarget.style.setProperty("--tilt-angle", `${magnitude * 6}deg`);
+}
 
-  return (
-    <div className="page-progress" aria-hidden="true">
-      <span style={{ transform: `scaleY(${progress})` }} />
-    </div>
-  );
+function resetParallax(event) {
+  event.currentTarget.style.setProperty("--tilt-x", "0deg");
+  event.currentTarget.style.setProperty("--tilt-y", "0deg");
+  event.currentTarget.style.setProperty("--tilt-axis-x", "0");
+  event.currentTarget.style.setProperty("--tilt-axis-y", "0");
+  event.currentTarget.style.setProperty("--tilt-angle", "0deg");
+}
+
+function updateMagnetic(event) {
+  const bounds = event.currentTarget.getBoundingClientRect();
+  event.currentTarget.style.setProperty("--mag-x", `${(event.clientX - bounds.left - bounds.width / 2) * 0.08}px`);
+  event.currentTarget.style.setProperty("--mag-y", `${(event.clientY - bounds.top - bounds.height / 2) * 0.08}px`);
+}
+
+function resetMagnetic(event) {
+  event.currentTarget.style.setProperty("--mag-x", "0px");
+  event.currentTarget.style.setProperty("--mag-y", "0px");
 }
 
 export function Hero() {
   return (
     <section className="hero section-shell" id="ch-00">
+      <div className="hero-wordmark" aria-hidden="true">AAKASH AI</div>
       <div className="hero-copy">
         <motion.p className="eyebrow" initial="hidden" animate="visible" variants={reveal}>
           <span className="live-dot" /> {PROFILE.status}
         </motion.p>
+        <p className="hero-intro">HELLO, I&apos;M {PROFILE.name.toUpperCase()}<br />{PROFILE.tagline.toUpperCase()}</p>
         <motion.h1 initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.08 }}>
           Building intelligence
           <br />
@@ -150,8 +173,8 @@ export function Hero() {
           I&apos;m {PROFILE.name}, an AI engineer creating practical machine-learning systems and expressive digital experiences.
         </motion.p>
         <motion.div className="hero-actions" initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.24 }}>
-          <a className="button button-primary" href="#ch-03" onClick={(event) => navigateClick(event, "#ch-03")}>
-            Explore selected work <ArrowDownRight size={17} />
+          <a className="button button-primary magnetic-button" href={PROFILE.whatsapp} target="_blank" rel="noopener noreferrer" onPointerMove={updateMagnetic} onPointerLeave={resetMagnetic}>
+            BOOK A 48-HR BUILD / HIRE ME <ArrowUpRight size={17} />
           </a>
           <a className="button button-quiet" href={`mailto:${PROFILE.email}`}>
             Start a conversation <ArrowUpRight size={16} />
@@ -166,21 +189,18 @@ export function Hero() {
           ))}
         </div>
       </div>
-      <div className="hero-visual" aria-label="Interactive 3D orbital network illustration">
+      <div className="hero-visual" aria-label="Interactive 3D orbital network illustration" onPointerMove={updateParallax} onPointerLeave={resetParallax}>
         <div className="hero-orbit orbit-one" />
         <div className="hero-orbit orbit-two" />
         <div className="hero-core"><span>AI</span><i /></div>
         {HERO_CARDS.map((card) => (
-          <motion.span
+          <span
             className="floating-label"
             key={card.label}
-            style={{ "--label-color": card.color, "--label-x": `${card.x}%`, "--label-y": `${card.y}%`, "--label-z": `${card.depth}px` }}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: [0, -8, 0] }}
-            transition={{ opacity: { delay: card.delay, duration: 0.5 }, y: { delay: card.delay, duration: 4, repeat: Infinity, ease: "easeInOut" } }}
+            style={{ "--label-color": card.color, "--label-x": `${card.x}%`, "--label-y": `${card.y}%`, "--label-z": `${card.depth}px`, "--card-delay": `${card.delay}s` }}
           >
             <span />{card.label}
-          </motion.span>
+          </span>
         ))}
         <div className="hero-portrait">
           <img src="/assets/images/profile-portrait.png" alt="" />
@@ -217,7 +237,7 @@ export function Experience() {
       <SectionHeading number="01" kicker="THE JOURNEY" title={<>Experience built<br /><em>in the real world.</em></>} />
       <div className="experience-list">
         {EXPERIENCE.map((item, index) => (
-          <motion.article className="experience-card" key={item.company} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }} custom={index}>
+          <motion.article className="experience-card tilt-card" key={item.company} onPointerMove={updateParallax} onPointerLeave={resetParallax} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }} custom={index}>
             <div className="experience-marker" style={{ "--accent": item.accent }}><span /></div>
             <div className="experience-period">{item.period}</div>
             <div className="experience-detail">
@@ -241,7 +261,7 @@ export function Skills() {
       <SectionHeading number="02" kicker="THE TOOLKIT" title={<>Curiosity, backed<br /><em>by capability.</em></>} />
       <div className="skill-grid">
         {SKILL_CATEGORIES.map((category, index) => (
-          <motion.article className="skill-card" key={category.name} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} transition={{ delay: index * 0.08 }}>
+          <motion.article className="skill-card tilt-card" key={category.name} onPointerMove={updateParallax} onPointerLeave={resetParallax} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} transition={{ delay: index * 0.08 }}>
             <span className="skill-index" style={{ color: category.color }}>0{index + 1} / DOMAIN</span>
             <h3>{category.name}</h3>
             <div className="tag-row">{category.items.map((skill) => <span className="tag" key={skill}>{skill}</span>)}</div>
@@ -262,7 +282,7 @@ export function Projects() {
       <SectionHeading number="03" kicker="SELECTED WORK" title={<>Ideas turned<br /><em>into working systems.</em></>} />
       <div className="project-grid">
         {PROJECTS.map((project, index) => (
-          <motion.article className="project-card" key={project.index} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} transition={{ delay: (index % 2) * 0.08 }}>
+          <motion.article className="project-card tilt-card" key={project.index} onPointerMove={updateParallax} onPointerLeave={resetParallax} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} transition={{ delay: (index % 2) * 0.08 }}>
             <div className="project-image-wrap" style={{ "--accent": project.accent }}>
               <img src={project.image} alt={project.imageAlt} loading="lazy" />
               <span className="project-number">{project.index}</span>
@@ -273,6 +293,12 @@ export function Projects() {
               <h3>{project.title}</h3>
               <p className="body-copy">{project.description}</p>
               <div className="tag-row">{project.stack.map((item) => <span className="tag" key={item}>{item}</span>)}</div>
+              {(project.demo || project.repo) && (
+                <div className="project-links">
+                  {project.demo && <a href={project.demo} target="_blank" rel="noopener noreferrer">LIVE DEMO <ArrowUpRight size={14} /></a>}
+                  {project.repo && <a href={project.repo} target="_blank" rel="noopener noreferrer">SOURCE CODE <Code2 size={14} /></a>}
+                </div>
+              )}
             </div>
           </motion.article>
         ))}
@@ -305,20 +331,48 @@ export function Education() {
 }
 
 export function Contact() {
+  const [selectedService, setSelectedService] = useState(FOUNDER_SERVICES[0]);
+  const [copyStatus, setCopyStatus] = useState("");
+  const message = `Hi Aakash, I would like to discuss a ${selectedService} project.`;
+  const whatsappUrl = new URL(PROFILE.whatsapp);
+  whatsappUrl.searchParams.set("text", message);
+  const emailUrl = `mailto:${PROFILE.email}?subject=${encodeURIComponent(`Project enquiry: ${selectedService}`)}&body=${encodeURIComponent(message)}`;
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(PROFILE.email);
+      setCopyStatus("Email copied");
+    } catch {
+      setCopyStatus("Copy unavailable — use the email link");
+    }
+  };
+
   return (
     <section className="contact-section section-shell" id="ch-05">
       <div className="contact-glow" aria-hidden="true" />
-      <div className="contact-content">
+      <div className="contact-content founder-terminal">
         <p className="eyebrow"><span className="live-dot" /> OPEN TO WHAT&apos;S NEXT</p>
-        <h2>Have a good<br /><em>problem to solve?</em></h2>
-        <p className="contact-copy">If you&apos;re building something meaningful with AI—or want a digital experience that feels different—I&apos;d like to hear about it.</p>
-        <a className="button button-primary contact-cta" href={`mailto:${PROFILE.email}`}>Let&apos;s make it real <ArrowUpRight size={17} /></a>
+        <h2>Build something<br /><em>worth shipping.</em></h2>
+        <p className="contact-copy">Need a high-converting 3D website, MVP, or custom AI workflow shipped in 48–72 hours? Choose a starting point and let&apos;s talk.</p>
+        <p className="terminal-label">FOR FOUNDERS &amp; BUSINESSES</p>
+        <div className="service-pills" role="group" aria-label="Choose a project type">
+          {FOUNDER_SERVICES.map((service) => (
+            <button key={service} type="button" aria-pressed={selectedService === service} onClick={() => setSelectedService(service)}>
+              {service}
+            </button>
+          ))}
+        </div>
+        <div className="contact-actions">
+          <a className="button button-primary" href={whatsappUrl.href} target="_blank" rel="noopener noreferrer"><MessageCircle size={16} /> WhatsApp</a>
+          <a className="button button-quiet" href={emailUrl}><Mail size={16} /> Email</a>
+        </div>
       </div>
-      <div className="contact-details">
-        <a href={`mailto:${PROFILE.email}`}><Mail size={17} /><span><small>EMAIL</small>{PROFILE.email}</span><ArrowUpRight size={15} /></a>
-        <a href={PROFILE.whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle size={17} /><span><small>WHATSAPP</small>Send a message</span><ArrowUpRight size={15} /></a>
+      <div className="contact-details recruiter-terminal">
+        <p className="terminal-label">FOR RECRUITERS</p>
+        <a href={PROFILE.github} target="_blank" rel="noopener noreferrer"><Code2 size={17} /><span><small>GITHUB</small>Projects &amp; code</span><ArrowUpRight size={15} /></a>
         <a href={PROFILE.linkedin} target="_blank" rel="noopener noreferrer"><ArrowUpRight size={17} /><span><small>LINKEDIN</small>Professional profile</span><ArrowUpRight size={15} /></a>
-        <a href={PROFILE.github} target="_blank" rel="noopener noreferrer"><Code2 size={17} /><span><small>GITHUB</small>Projects & code</span><ArrowUpRight size={15} /></a>
+        <a href={PROFILE.resume} download><ArrowDown size={17} /><span><small>RESUME</small>Download PDF</span><ArrowUpRight size={15} /></a>
+        <button className="copy-email" type="button" onClick={copyEmail}><Copy size={16} /><span><small>EMAIL</small><span aria-live="polite">{copyStatus || PROFILE.email}</span></span></button>
         <div className="contact-location"><MapPin size={16} />{PROFILE.location}</div>
       </div>
     </section>
@@ -336,8 +390,37 @@ export function Footer() {
 }
 
 function SectionHeading({ number, kicker, title }) {
+  const heading = useRef(null);
+  const watermark = useRef(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(watermark.current, { autoAlpha: 0.1, x: 0 });
+      return undefined;
+    }
+    const context = gsap.context(() => {
+      gsap.fromTo(
+        watermark.current,
+        { autoAlpha: 0, x: 70 },
+        {
+          autoAlpha: 0.1,
+          x: 0,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: heading.current.closest("section"),
+            start: "top 70%",
+            once: true,
+          },
+        },
+      );
+    }, heading);
+    return () => context.revert();
+  }, []);
+
   return (
-    <motion.div className="section-heading" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.25 }}>
+    <motion.div ref={heading} className="section-heading" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.25 }}>
+      <span ref={watermark} className="chapter-watermark" aria-hidden="true">{number}</span>
       <span className="section-number">{number}</span>
       <div><p className="eyebrow">{kicker}</p><h2>{title}</h2></div>
       <ArrowDownRight className="heading-arrow" size={23} />

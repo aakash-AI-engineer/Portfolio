@@ -1,8 +1,8 @@
 import { Component, lazy, Suspense, useEffect } from "react";
 import { MotionConfig } from "framer-motion";
 import { initScroll, ScrollTrigger, destroyScroll } from "./lib/scroll";
+import ChapterHUD from "./components/ChapterHUD";
 import {
-  ChapterHUD,
   Contact,
   CustomCursor,
   Education,
