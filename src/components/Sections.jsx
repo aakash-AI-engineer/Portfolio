@@ -154,6 +154,8 @@ export function Hero() {
             className="floating-label"
             key={card.label}
             style={{ "--label-color": card.color, "--label-x": `${card.x}%`, "--label-y": `${card.y}%`, "--label-z": `${card.depth}px`, "--card-delay": `${card.delay}s` }}
+            onPointerMove={updateParallax}
+            onPointerLeave={resetParallax}
           >
             <span />{card.label}
           </span>
@@ -188,7 +190,7 @@ export function Experience() {
       <SectionHeading number="01" kicker="CH.01 //" title="EXPERIENCE" description="Roles that built the arsenal — production AI systems, high-precision data work and applied machine learning." />
       <div className="experience-list">
         {EXPERIENCE.map((item, index) => (
-          <motion.article className="experience-card tilt-card" key={item.company} onPointerMove={updateParallax} onPointerLeave={resetParallax} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }} custom={index}>
+          <motion.article className="experience-card tilt-card" key={item.company} style={{ "--accent": item.accent }} onPointerMove={updateParallax} onPointerLeave={resetParallax} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }} custom={index}>
             <div className="experience-card-meta">
               <span className="experience-period">{item.period}</span>
               <span className="experience-team">{item.team}</span>
@@ -205,16 +207,25 @@ export function Experience() {
   );
 }
 
-function SkillOrbit() {
+function SkillOrbit({ selectedCategory, selectedSkill, onSelectCategory, onSelectSkill }) {
   const [hovered, setHovered] = useState(null);
-  const [selected, setSelected] = useState(null);
-  const active = hovered ?? selected;
+  const [compact, setCompact] = useState(false);
+  const active = hovered ?? selectedCategory;
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 900px)");
+    const updateCompact = () => setCompact(media.matches);
+    updateCompact();
+    media.addEventListener("change", updateCompact);
+    return () => media.removeEventListener("change", updateCompact);
+  }, []);
   const nodes = SKILL_CATEGORIES.map((category, categoryIndex) => ({
     category,
     categoryIndex,
-    skills: category.items.slice(0, 6),
+    skills: category.items,
   }));
-  const ringRadii = [37, 29, 21];
+  const ringRadii = compact ? [34, 26, 18] : [44, 33, 22];
+  const ringVerticalRadii = compact ? [35, 30, 22] : [35, 27, 19];
+  const phaseOffsets = compact ? [0, 15, 0] : [0, 15, 30];
 
   return (
     <div className="skill-orbit" aria-label="Interactive technology skill map">
@@ -223,22 +234,22 @@ function SkillOrbit() {
           <button
             key={category.name}
             type="button"
-            aria-pressed={selected === index}
+            aria-pressed={selectedCategory === index}
             style={{ "--cluster-color": category.color }}
-            onClick={() => setSelected(selected === index ? null : index)}
+            onClick={() => onSelectCategory(selectedCategory === index ? null : index)}
           >
             <i />{category.name}
           </button>
         ))}
       </div>
-      <svg className="skill-orbit-lines" viewBox="0 0 1000 460" aria-hidden="true">
+      <svg className="skill-orbit-lines" viewBox="0 0 1000 560" aria-hidden="true">
         {ringRadii.map((radius, index) => (
           <ellipse
             key={radius}
             cx="500"
-            cy="230"
+            cy="280"
             rx={`${radius}%`}
-            ry={`${radius * 0.52}%`}
+            ry={`${ringVerticalRadii[index]}%`}
             fill="none"
             stroke={nodes[index].category.color}
             strokeOpacity={active === null || active === index ? "0.5" : "0.12"}
@@ -249,9 +260,9 @@ function SkillOrbit() {
           <line
             key={category.name}
             x1="500"
-            y1="230"
+            y1="280"
             x2={index === 0 ? "130" : index === 1 ? "790" : "500"}
-            y2={index === 2 ? "70" : "380"}
+            y2={index === 2 ? "85" : "475"}
             stroke={category.color}
             strokeOpacity={active === null || active === index ? "0.28" : "0.06"}
           />
@@ -262,19 +273,31 @@ function SkillOrbit() {
         <div
           key={category.name}
           className={`orbit-cluster${active === categoryIndex ? " is-active" : ""}`}
-          style={{ "--cluster-color": category.color, "--ring-radius": `${ringRadii[categoryIndex]}%` }}
+          style={{
+            "--cluster-color": category.color,
+            "--ring-radius": `${ringRadii[categoryIndex]}%`,
+          }}
           onMouseEnter={() => setHovered(categoryIndex)}
           onMouseLeave={() => setHovered(null)}
         >
+          <h3 className="orbit-cluster-title">{category.name}</h3>
           {skills.map((skill, index) => {
-            const angle = (index / skills.length) * Math.PI * 2 - Math.PI / 2;
+            const angle =
+              (index / skills.length) * Math.PI * 2 -
+              Math.PI / 2 +
+              (phaseOffsets[categoryIndex] * Math.PI) / 180;
             return (
               <button
                 className="orbit-node"
                 key={skill}
                 type="button"
-                style={{ "--node-x": `${50 + Math.cos(angle) * ringRadii[categoryIndex]}%`, "--node-y": `${50 + Math.sin(angle) * ringRadii[categoryIndex] * 0.52}%` }}
+                style={{
+                  "--node-x": `${50 + Math.cos(angle) * ringRadii[categoryIndex]}%`,
+                  "--node-y": `${50 + Math.sin(angle) * ringVerticalRadii[categoryIndex]}%`,
+                }}
                 aria-label={`${skill} — ${category.name}`}
+                aria-pressed={selectedCategory === categoryIndex && selectedSkill === skill}
+                onClick={() => onSelectSkill(categoryIndex, skill)}
                 onFocus={() => setHovered(categoryIndex)}
                 onBlur={() => setHovered(null)}
               >
@@ -289,17 +312,58 @@ function SkillOrbit() {
 }
 
 export function Skills() {
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSkill, setSelectedSkill] = useState(null);
+  const selectCategory = (categoryIndex) => {
+    setSelectedCategory(categoryIndex);
+    setSelectedSkill(null);
+  };
+  const selectSkill = (categoryIndex, skill) => {
+    setSelectedCategory(categoryIndex);
+    setSelectedSkill(skill);
+  };
+
   return (
     <section className="content-section skills-section chapter-section" id="ch-02">
-      <SectionHeading number="02" kicker="CH.02 //" title="AI & 3D ARSENAL" description="The full stack taxonomy — hover the orbital nodes, or click a cluster to isolate its ring." />
-      <div className="orbit-heading"><span /> ORBITAL MAP // 03 CLUSTERS <span>HOVER NODES</span></div>
-      <SkillOrbit />
+      <SectionHeading number="02" kicker="CH.02 //" title="AI & 3D ARSENAL" description="Click an orbital skill to highlight it below, or select a cluster to highlight its full skill set." />
+      <div className="orbit-heading"><span /> ORBITAL MAP // 03 CLUSTERS <span>CLICK TO HIGHLIGHT</span></div>
+      <SkillOrbit
+        selectedCategory={selectedCategory}
+        selectedSkill={selectedSkill}
+        onSelectCategory={selectCategory}
+        onSelectSkill={selectSkill}
+      />
+      <p className="skill-selection-status" aria-live="polite">
+        {selectedSkill
+          ? `SELECTED SKILL // ${selectedSkill}`
+          : selectedCategory !== null
+            ? `SELECTED CLUSTER // ${SKILL_CATEGORIES[selectedCategory].name}`
+            : "SELECT A NODE TO HIGHLIGHT ITS SKILL"}
+      </p>
       <div className="skill-grid">
         {SKILL_CATEGORIES.map((category, index) => (
-          <motion.article className="skill-card tilt-card" key={category.name} onPointerMove={updateParallax} onPointerLeave={resetParallax} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} transition={{ delay: index * 0.08 }}>
+          <motion.article
+            className={`skill-card tilt-card${selectedCategory === index ? " is-selected" : ""}`}
+            key={category.name}
+            style={{ "--skill-accent": category.color }}
+            onPointerMove={updateParallax}
+            onPointerLeave={resetParallax}
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ delay: index * 0.08 }}
+          >
             <span className="skill-index" style={{ color: category.color }}>0{index + 1} / DOMAIN</span>
             <h3>{category.name}</h3>
-            <div className="tag-row">{category.items.map((skill) => <span className="tag" key={skill}>{skill}</span>)}</div>
+            <div className="tag-row">{category.items.map((skill) => (
+              <span
+                className={`tag skill-list-item${selectedCategory === index && (!selectedSkill || selectedSkill === skill) ? " is-highlighted" : ""}`}
+                key={skill}
+              >
+                {skill}
+              </span>
+            ))}</div>
           </motion.article>
         ))}
       </div>

@@ -2,6 +2,7 @@ import { Component, useEffect } from "react";
 import { MotionConfig } from "framer-motion";
 import { initScroll, ScrollTrigger, destroyScroll } from "./lib/scroll";
 import ChapterHUD from "./components/ChapterHUD";
+import SpaceBackground from "./components/SpaceBackground";
 import {
   Contact,
   CustomCursor,
@@ -53,7 +54,7 @@ export default function App() {
     <ErrorBoundary>
       <MotionConfig reducedMotion="user">
         <div className="portfolio-root">
-          <div className="space-backdrop" aria-hidden="true" />
+          <SpaceBackground />
           <GrainOverlay />
           <CustomCursor />
           <Navbar />

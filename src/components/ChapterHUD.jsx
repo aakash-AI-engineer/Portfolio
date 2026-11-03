@@ -47,14 +47,14 @@ export default function ChapterHUD() {
         className="absolute left-0 top-0 h-[2px] bg-gradient-to-r from-crimson via-cyan to-violet transition-[width] duration-150"
         style={{ width: `${progress}%` }}
       />
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-4 py-3 md:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-2 py-2 sm:px-4 md:px-8">
         <span
           className="w-10 shrink-0 font-mono text-[10px] text-cyan"
           data-testid="hud-progress"
         >
           {String(progress).padStart(3, "0")}%
         </span>
-        <div className="no-scrollbar flex flex-1 items-center justify-center gap-1 overflow-x-auto sm:gap-2">
+        <div className="no-scrollbar flex flex-1 items-center justify-start gap-1 overflow-x-auto sm:justify-center sm:gap-2">
           {CHAPTERS.map((chapter) => {
             const isActive = active === chapter.id;
             return (
@@ -65,19 +65,19 @@ export default function ChapterHUD() {
                 data-testid={`hud-chapter-${chapter.id}`}
                 aria-label={`${chapter.id} ${chapter.label}`}
                 aria-current={isActive ? "location" : undefined}
-                className={`group flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5 transition-all duration-300 ${
+                className={`group flex min-h-11 shrink-0 flex-col items-center justify-center gap-0 rounded-lg px-2 py-1 transition-all duration-300 sm:px-2.5 ${
                   isActive ? "text-white" : "text-slate-500 hover:text-slate-300"
                 }`}
               >
                 <span
-                  className={`font-mono text-[10px] transition-colors ${
+                  className={`font-mono text-[9px] transition-colors sm:text-[10px] ${
                     isActive ? "text-crimson" : "text-slate-600 group-hover:text-slate-400"
                   }`}
                 >
                   {chapter.id}
                 </span>
                 <span
-                  className={`hidden font-mono text-[10px] uppercase tracking-[0.18em] lg:inline ${
+                  className={`whitespace-nowrap font-mono text-[6px] uppercase tracking-normal sm:text-[8px] sm:tracking-[0.1em] lg:text-[10px] lg:tracking-[0.18em] ${
                     isActive ? "opacity-100" : "opacity-70"
                   }`}
                 >
