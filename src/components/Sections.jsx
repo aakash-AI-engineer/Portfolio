@@ -67,6 +67,7 @@ export function Navbar() {
         <span className="wordmark-icon"><Code2 size={22} /></span>
         <span>{PROFILE.short}<small>.AI // PORTFOLIO</small></span>
       </a>
+      <span className="header-availability"><span className="live-dot" /> OPEN TO WORK</span>
       <a className="header-contact" href={PROFILE.whatsapp} target="_blank" rel="noopener noreferrer">
         BOOK A 48-HR BUILD
       </a>

@@ -1,8 +1,32 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 function WireframeGlobe() {
   const system = useRef(null);
+  const geometry = useRef(null);
+
+  useEffect(() => {
+    const sphere = geometry.current;
+    if (!sphere || sphere.userData.warped) return;
+    const positions = sphere.attributes.position;
+    for (let index = 0; index < positions.count; index += 1) {
+      const x = positions.getX(index);
+      const y = positions.getY(index);
+      const z = positions.getZ(index);
+      const length = Math.hypot(x, y, z);
+      const nx = x / length;
+      const ny = y / length;
+      const nz = z / length;
+      const wave =
+        Math.sin(nx * 3.2 + ny * 1.8) * Math.cos(nz * 2.8 - ny * 1.3) +
+        Math.sin(ny * 4.1 + nz * 2.2) * 0.4;
+      const radius = 2.55 + wave * 0.21;
+      positions.setXYZ(index, nx * radius, ny * radius, nz * radius);
+    }
+    positions.needsUpdate = true;
+    sphere.computeVertexNormals();
+    sphere.userData.warped = true;
+  }, []);
 
   useFrame((state, delta) => {
     if (!system.current) return;
@@ -14,8 +38,8 @@ function WireframeGlobe() {
   return (
     <group ref={system} rotation={[0.15, 0.1, -0.12]}>
       <mesh>
-        <icosahedronGeometry args={[2.55, 3]} />
-        <meshBasicMaterial color="#a919ef" wireframe transparent opacity={0.34} />
+        <sphereGeometry ref={geometry} args={[2.55, 48, 36]} />
+        <meshBasicMaterial color="#a919ef" wireframe transparent opacity={0.31} />
       </mesh>
       <mesh rotation={[0.45, 0.3, 0.1]}>
         <torusGeometry args={[1.72, 0.012, 8, 128]} />

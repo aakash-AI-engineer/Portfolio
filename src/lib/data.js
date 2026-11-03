@@ -34,8 +34,8 @@ export const HERO_CARDS = [
 
 export const STATS = [
   { value: "3+", label: "Production AI systems" },
-  { value: "Ex-Amazon", label: "AGI Data Services" },
-  { value: "IEEE / NIT", label: "Published research" },
+  { value: "Ex-Amazon", label: "ML Data Associate" },
+  { value: "Published", label: "IEEE/NIT Researcher" },
 ];
 
 export const EXPERIENCE = [
